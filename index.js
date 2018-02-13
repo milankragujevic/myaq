@@ -21,8 +21,10 @@ var connection = mysql.createConnection({
 
 connection.connect()
 
+app.use(express.static(path.join(__dirname, 'layout', 'assets')))
+
 app.get('/', (req, res) => {
-  
+  fs.readFile(path.join(__dirname, 'layout', 'index.html'), (data) => res.send(data))
 })
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'))
