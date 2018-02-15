@@ -14,11 +14,10 @@ CREATE TABLE `accounts` (
 
 CREATE TABLE `jobs` (
   `id` int(15) NOT NULL AUTO_INCREMENT,
-  `uuid` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
   `type` int(15) NOT NULL,
   `data` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `state_variables` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `state` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
