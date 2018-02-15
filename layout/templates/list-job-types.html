@@ -1,0 +1,25 @@
+<h2>Job Types</h2>
+<div class="table-responsive">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Fields</th>
+        <th>Controls</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#results}}
+      <tr>
+        <td>{{id}}</td>
+        <td>{{name}}</td>
+        <td>{{fields_json}}</td>
+        <td align="center">
+          <a href="#!job-types/delete/{{id}}"><span data-feather="x-circle"></span></a>
+        </td>
+      </tr>
+      {{/results}}
+    </tbody>
+  </table>
+</div>

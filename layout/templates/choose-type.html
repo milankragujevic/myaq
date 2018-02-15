@@ -1,0 +1,14 @@
+<h2>Add job</h2>
+<hr>
+<h4>Choose type for new job</h4>
+<form>
+  <div class="form-group">
+    <label for="jobType--choose-type">Job type</label>
+    <select class="form-control" id="jobType--choose-type">
+      {{#types}}
+      <option value="{{id}}">{{name}}</option>
+      {{/types}}
+    </select>
+  </div>
+  <button type="submit" id="nextButton--choose-type" class="btn btn-primary">Next</button>
+</form>

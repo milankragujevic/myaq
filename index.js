@@ -275,8 +275,8 @@ app.delete('/api/v1/jobs/:jobId', (req, res) => {
   })
 })
 
-app.post('/api/v1/jobs/:typeId', (req, res) => {
-  let id = req.params.typeId
+app.post('/api/v1/jobs/:jobId', (req, res) => {
+  let id = req.params.jobId
   let params = req.body
   delete params['id']
   if(params.fields && params.fields.length > 0) {

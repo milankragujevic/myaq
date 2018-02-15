@@ -1,0 +1,10 @@
+<h2>Add job</h2>
+<form>
+  {{#type.fields}}
+  <div class="form-group">
+    <label for="create-job--{{.}}">{{.}}</label>
+    <input type="text" class="form-control fields--create-job create-job--field-{{.}}" data-key="{{.}}" id="create-job--{{.}}">
+  </div>
+  {{/type.fields}}
+  <button type="submit" id="button--create-job" class="btn btn-primary">Create</button>
+</form>
