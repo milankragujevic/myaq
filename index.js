@@ -208,7 +208,11 @@ app.post('/api/v1/jobs/create', (req, res) => {
 })
 
 app.get('/api/v1/jobs', (req, res) => {
-  qb.get(TABLE_JOBS, (err, qbRes) => {
+  let whereQuery = {}
+  if(req.query.status && req.query.status.length > 0) {
+    whereQuery['status'] = req.query.status
+  }
+  const resultFunction = (err, qbRes) => {
     if (err) {
       if(DEBUG) { console.error(err) }
       return error(res, 'Database error occurred!', 10006, err)
@@ -228,7 +232,12 @@ app.get('/api/v1/jobs', (req, res) => {
       success: true,
       results: results
     })
-  })
+  }
+  if(Object.keys(whereQuery).length > 0) {
+    qb.where(whereQuery).get(TABLE_JOBS, resultFunction)
+  } else {
+    qb.get(TABLE_JOBS, resultFunction)
+  }
 })
 
 app.get('/api/v1/jobs/:jobId', (req, res) => {
