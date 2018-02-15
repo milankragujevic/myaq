@@ -3,7 +3,7 @@ SET time_zone = '+00:00';
 
 SET NAMES utf8mb4;
 
-CREATE TABLE `accounts` (
+CREATE TABLE `users` (
   `id` int(15) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,

@@ -187,6 +187,80 @@ router.on('job-types/delete/:id', (params, query) => {
   })
 })
 
+router.on('users', (params, query) => {
+  loading()
+  $('.link--generic-menu.active').removeClass('active')
+  $('#link--users').addClass('active')
+  $.get('/api/v1/users', (data) => {
+    if(data.success) {
+      let results = data.results
+      results.forEach((result, i) => {
+        results[i]['write_permission_bool'] = result.write_permission ? 'Yes' : 'No'
+      })
+      view('list-users', {results: results}, 'main')
+    }
+  })
+})
+
+router.on('users/create', (params, query) => {
+  loading()
+  $('.link--generic-menu.active').removeClass('active')
+  $('#link--create-user').addClass('active')
+  view('create-user', {}, 'main', () => {
+    $('#button--create-user').click(() => {
+      let username = $('#create-user--username').val()
+      let password = $('#create-user--password').val()
+      let write_permission = $('#create-user--write_permission').is(':checked')
+      let write_permission_bool = write_permission ? '1' : '0'
+      $.post('/api/v1/users/create', { username: username, password: password, write_permission: write_permission_bool }, (response) => {
+        if(response.success) {
+          window.location.href = '#!users'
+        }
+      })
+    })
+  })
+})
+
+router.on('users/edit/:id', (params, query) => {
+  loading()
+  let id = params.id
+  $.get('/api/v1/users/' + encodeURIComponent(id), (response) => {
+    if(response.success) {
+      $('.link--generic-menu.active').removeClass('active')
+      view('update-user', {}, 'main', () => {
+        $('#update-user--username').val(response.result.username)
+        if(response.result.write_permission === '1') {
+          $('#update-user--write_permission').attr('checked', '1')
+        } else {
+          $('#update-user--write_permission').removeAttr('checked')
+        }
+        $('#button--update-user').click(() => {
+          let username = $('#update-user--username').val()
+          let password = $('#update-user--password').val()
+          let write_permission = $('#update-user--write_permission').is(':checked')
+          let write_permission_bool = write_permission ? '1' : '0'
+          $.post('/api/v1/users/' + id, { username: username, password: password, write_permission: write_permission_bool }, (response) => {
+            if(response.success) {
+              window.location.href = '#!users'
+            }
+          })
+        })
+      })
+    }
+  })
+})
+
+router.on('users/delete/:id', (params, query) => {
+  loading()
+  let id = params.id
+  $('.link--generic-menu.active').removeClass('active')
+  $.delete('/api/v1/users/' + encodeURIComponent(id), (response) => {
+    if(response.success) {
+      window.location.href = '#!users'
+    }
+  })
+})
+
 router.notFound((query) => {
   notFound()
 })

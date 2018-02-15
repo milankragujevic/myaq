@@ -6,11 +6,14 @@ const mysql = require('mysql')
 const querybuilder = require('node-querybuilder')
 const defaults = require('defaults')
 const bodyParser = require('body-parser')
+const crypto = require('crypto')
 
 /// TODO: Implement authentication using `passport`
 
-const TABLE_TYPES = 'types'
-const TABLE_JOBS = 'jobs'
+const TABLE_PREFIX = ''
+const TABLE_TYPES = TABLE_PREFIX + 'types'
+const TABLE_JOBS = TABLE_PREFIX + 'jobs'
+const TABLE_USERS = TABLE_PREFIX + 'users'
 const DEBUG = true
 
 const configFile = path.join(__dirname, 'config.json')
@@ -42,6 +45,8 @@ const error = (res, message, code = 'undefined', errorDetails = 'undefined') => 
   }
   res.status(500).json(data).end()
 }
+
+const md5 = (data) => crypto.createHash('md5').update(data).digest("hex")
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -285,13 +290,112 @@ app.post('/api/v1/jobs/:jobId', (req, res) => {
     params.fields = fields_json
   }
   qb.set(params).update(TABLE_JOBS, {id: id}, (err, qbRes) => {
-      if (err) {
-        if(DEBUG) { console.error(err) }
-        return error(res, 'Database error occurred!', 10026, err)
-      }
-      res.send({
-        success: true
-      })
+    if (err) {
+      if(DEBUG) { console.error(err) }
+      return error(res, 'Database error occurred!', 10026, err)
+    }
+    res.send({
+      success: true
+    })
+  })
+})
+
+app.get('/api/v1/users', (req, res) => {
+  qb.get(TABLE_USERS, (err, qbRes) => {
+    if (err) {
+      if(DEBUG) { console.error(err) }
+      return error(res, 'Database error occurred!', 10033, err)
+    }
+    let results = []
+    for(let i in qbRes) {
+      let item = qbRes[i]
+      delete item['password']
+      results.push(item)
+    }
+    res.json({
+      success: true,
+      results: results
+    })
+  })
+})
+
+app.delete('/api/v1/users/:userId', (req, res) => {
+  qb.delete(TABLE_USERS, { id: req.params.userId }, (err, qbRes) => {
+    if (err) {
+      if(DEBUG) { console.error(err) }
+      return error(res, 'Database error occurred!', 10035, err)
+    }
+    res.json({
+      success: true
+    })
+  })
+})
+
+app.post('/api/v1/users/create', (req, res) => {
+  let params = req.body
+  if(typeof params.username === 'undefined') {
+    return error(res, `Username can't be undefined!`, 10037)
+  }
+  if(typeof params.password === 'undefined') {
+    return error(res, `Password can't be undefined!`, 10038)
+  }
+  if(params.username.length < 1) {
+    return error(res, `Name can't be empty!`, 10039)
+  }
+  if(params.password.length < 1) {
+    return error(res, `Fields can't be empty!`, 10040)
+  }
+  let username = params.username
+  let password = md5(params.password)
+  let write_permission = params.write_permission == '1' ? '1' : '0'
+  qb.insert(TABLE_USERS, {username: username, password: password, write_permission: write_permission}, (err, qbRes) => {
+    if (err) {
+      if(DEBUG) { console.error(err) }
+      return error(res, 'Database error occurred!', 10041, err)
+    }
+    res.send({
+      success: true,
+      id: qbRes.insertId
+    })
+  })
+})
+
+app.post('/api/v1/users/:userId', (req, res) => {
+  let id = req.params.userId
+  let params = req.body
+  delete params['id']
+  if(params['password'] == '') {
+    delete params['password']
+  }
+  if(params['password'] && params['password'].length > 1) {
+    params.password = md5(params.password)
+  }
+  qb.set(params).update(TABLE_USERS, {id: id}, (err, qbRes) => {
+    if (err) {
+      if(DEBUG) { console.error(err) }
+      return error(res, 'Database error occurred!', 10052, err)
+    }
+    res.send({
+      success: true
+    })
+  })
+})
+
+app.get('/api/v1/users/:userId', (req, res) => {
+  qb.where({id: req.params.userId}).get(TABLE_USERS, (err, qbRes) => {
+    if (err) {
+      if(DEBUG) { console.error(err) }
+      return error(res, 'Database error occurred!', 10064)
+    }
+    if(qbRes.length < 1) {
+      return error(res, 'Item not found!', 10066)
+    }
+    let item = qbRes[0]
+    delete item['password']
+    res.json({
+      success: true,
+      result: item
+    })
   })
 })
 

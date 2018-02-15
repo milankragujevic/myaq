@@ -1,0 +1,19 @@
+<h2>Add job type</h2>
+<form>
+  <div class="form-group">
+    <label for="create-user--username">Username</label>
+    <input type="text" class="form-control fields--create-user create-user--field-username" data-key="username" id="create-user--username">
+  </div>
+  <div class="form-group">
+    <label for="create-user--password">Password</label>
+    <input type="password" class="form-control fields--create-user create-user--field-password" data-key="password" id="create-user--password">
+  </div>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input fields--create-user create-user--field-write_permission" data-key="write_permission" id="create-user--write_permission">
+    <label class="form-check-label" for="create-user--write_permission">Has write permission?</label>
+    <br>
+    <span class="text-muted">Whether the user can write to the database, or just read the data?</span>
+  </div>
+  <br>
+  <button type="submit" id="button--create-user" class="btn btn-primary">Create</button>
+</form>
