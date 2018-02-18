@@ -1,0 +1,3 @@
+body.is-firefox .sidebar {
+	top: 48px !important; /* Height of navbar */
+}
