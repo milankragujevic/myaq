@@ -54,10 +54,13 @@ const notFound = () => {
 }
 
 $.get('/api/v1/is-logged-in', (data) => {
-	console.log('User is logged in. ')
+    window.MY_USERNAME = data.username
+    if(!data.write_permission) {
+        $('.requires--write-permission').hide()
+    } else {
+        $('.requires--write-permission').show()
+    }
 }).fail(() => {
-	console.log('Showing login page...')
-	console.debug('User not logged in!')
 	window.location.href = '#!login'
 })
 
@@ -131,7 +134,6 @@ router.on('jobs/create/:type', (params, query) => {
         if (jobType === {}) {
             return notFound()
         }
-        console.log(jobType)
         view('create-job', {
             type: jobType
         }, 'main', () => {
@@ -142,7 +144,6 @@ router.on('jobs/create/:type', (params, query) => {
                     let value = $(this).val()
                     data[key] = value
                 })
-                console.log(data)
                 $.post('/api/v1/jobs/create', {
                     type: type,
                     data: JSON.stringify(data)

@@ -112,6 +112,14 @@ passport.use(new LocalStrategy((username, password, callback) => {
     })
 }))
 
+const ensureWritePermission = (req, res) => {
+    if(req.user.write_permission !== '1') {
+        error(res, `You don't have write permission!`, 10222)
+        return false
+    }
+    return true
+}
+
 app.get('/api/v1', (req, res, next) => {
     res.json({
         name: 'MYAQ API',
@@ -128,7 +136,9 @@ app.get('/api/v1/is-logged-in', ensureLogin, (req, res, next) => {
     }
     res.json({
         success: true,
-        loggedIn: true
+        loggedIn: true,
+        username: req.user.username,
+        write_permission: req.user.write_permission
     })
 })
 
@@ -201,6 +211,8 @@ app.get('/api/v1/job-types/:typeId', ensureLogin, (req, res) => {
 })
 
 app.delete('/api/v1/job-types/:typeId', ensureLogin, (req, res) => {
+    let ewp = ensureWritePermission(req, res)
+    if(!ewp) { return }
     qb.delete(TABLE_TYPES, {
         id: req.params.typeId
     }, (err, qbRes) => {
@@ -227,6 +239,8 @@ app.delete('/api/v1/job-types/:typeId', ensureLogin, (req, res) => {
 })
 
 app.post('/api/v1/job-types/create', ensureLogin, (req, res) => {
+    let ewp = ensureWritePermission(req, res)
+    if(!ewp) { return }
     let params = req.body
     if (typeof params.name === 'undefined') {
         return error(res, `Name can't be undefined!`, 10001)
@@ -261,6 +275,8 @@ app.post('/api/v1/job-types/create', ensureLogin, (req, res) => {
 })
 
 app.post('/api/v1/job-types/:typeId', ensureLogin, (req, res) => {
+    let ewp = ensureWritePermission(req, res)
+    if(!ewp) { return }
     let id = req.params.typeId
     let params = req.body
     delete params['id']
@@ -285,6 +301,8 @@ app.post('/api/v1/job-types/:typeId', ensureLogin, (req, res) => {
 })
 
 app.post('/api/v1/jobs/create', ensureLogin, (req, res) => {
+    let ewp = ensureWritePermission(req, res)
+    if(!ewp) { return }
     let params = req.body
     if (typeof params.type === 'undefined') {
         return error(res, `Type can't be undefined!`, 10019)
@@ -407,6 +425,8 @@ app.get('/api/v1/jobs/:jobId', ensureLogin, (req, res) => {
 })
 
 app.delete('/api/v1/jobs/:jobId', ensureLogin, (req, res) => {
+    let ewp = ensureWritePermission(req, res)
+    if(!ewp) { return }
     qb.delete(TABLE_JOBS, {
         id: req.params.jobId
     }, (err, qbRes) => {
@@ -423,6 +443,8 @@ app.delete('/api/v1/jobs/:jobId', ensureLogin, (req, res) => {
 })
 
 app.post('/api/v1/jobs/:jobId', ensureLogin, (req, res) => {
+    let ewp = ensureWritePermission(req, res)
+    if(!ewp) { return }
     let id = req.params.jobId
     let params = req.body
     delete params['id']
@@ -468,6 +490,8 @@ app.get('/api/v1/users', ensureLogin, (req, res) => {
 })
 
 app.delete('/api/v1/users/:userId', ensureLogin, (req, res) => {
+    let ewp = ensureWritePermission(req, res)
+    if(!ewp) { return }
     qb.delete(TABLE_USERS, {
         id: req.params.userId
     }, (err, qbRes) => {
@@ -484,6 +508,8 @@ app.delete('/api/v1/users/:userId', ensureLogin, (req, res) => {
 })
 
 app.post('/api/v1/users/create', ensureLogin, (req, res) => {
+    let ewp = ensureWritePermission(req, res)
+    if(!ewp) { return }
     let params = req.body
     if (typeof params.username === 'undefined') {
         return error(res, `Username can't be undefined!`, 10037)
@@ -519,6 +545,8 @@ app.post('/api/v1/users/create', ensureLogin, (req, res) => {
 })
 
 app.post('/api/v1/users/:userId', ensureLogin, (req, res) => {
+    let ewp = ensureWritePermission(req, res)
+    if(!ewp) { return }
     let id = req.params.userId
     let params = req.body
     delete params['id']
