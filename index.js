@@ -18,7 +18,6 @@ const TABLE_PREFIX = ''
 const TABLE_TYPES = TABLE_PREFIX + 'types'
 const TABLE_JOBS = TABLE_PREFIX + 'jobs'
 const TABLE_USERS = TABLE_PREFIX + 'users'
-const APP_SECRET = 'DFBDDF599E21B9DD677C9BEEB6B96'
 const DEBUG = true
 
 const configFile = path.join(__dirname, 'config.json')
@@ -35,6 +34,8 @@ const qb = querybuilder.QueryBuilder({
     password: config.password,
     database: config.database
 }, 'mysql', 'single')
+
+const APP_SECRET = config.secret
 
 const error = (res, message, code = 'undefined', errorDetails = 'undefined') => {
     let data = {
@@ -113,7 +114,7 @@ passport.use(new LocalStrategy((username, password, callback) => {
 }))
 
 const ensureWritePermission = (req, res) => {
-    if(req.user.write_permission !== '1') {
+    if(req.user.write_permission != '1') {
         error(res, `You don't have write permission!`, 10222)
         return false
     }
