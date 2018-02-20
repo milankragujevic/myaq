@@ -5,6 +5,10 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
 SET NAMES utf8mb4;
 
+CREATE DATABASE `myaq` COLLATE 'utf8mb4_unicode_ci';
+
+USE `myaq`;
+
 CREATE TABLE `jobs` (
   `id` int(15) NOT NULL AUTO_INCREMENT,
   `type` int(15) NOT NULL,
