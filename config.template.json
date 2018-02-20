@@ -2,5 +2,6 @@
   "username": "",
   "password": "",
   "server": "",
-  "database": ""
+  "database": "",
+  "secret": ""
 }
